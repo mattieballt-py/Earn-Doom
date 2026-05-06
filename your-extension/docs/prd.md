@@ -56,7 +56,8 @@ Creators often open Instagram to research, reference, or get inspired, then stay
 
 ### Blocking Behavior
 - When the counter reaches the quota, the extension must block further passive Instagram content consumption.
-- The mask should visually cover Instagram content in a way that matches the user's theme context.
+- The mask should visually cover only the post, story, reel, or equivalent content containers, not Instagram action buttons, navigation, or creation controls.
+- The mask should never cover the + Create entry point or other composer controls needed to publish content.
 - If the page is in dark appearance, the overlay should be dark; if light, the overlay should be light.
 - The overlay should remain visible until the user completes the reset action by publishing a post.
 
@@ -69,6 +70,7 @@ Creators often open Instagram to research, reference, or get inspired, then stay
 - The extension must not interfere with the Instagram post creation flow.
 - The user must be able to open the + Create composer and complete a post.
 - While the composer is active, blocking overlays should be suppressed.
+- The mask must stay off of buttons, menus, and composer controls so that creation remains possible even when the quota has been reached.
 - After publishing, the extension must clear the block state and reset the counter to zero with a new quota.
 
 ## Instagram Detection Strategy
