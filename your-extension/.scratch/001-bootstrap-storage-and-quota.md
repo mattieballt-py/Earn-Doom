@@ -8,3 +8,6 @@ Set up the MV3 extension shell plus local state for current count, quota, blocke
 
 ### Blocked by
 - None - can start immediately
+
+### Status
+- Done

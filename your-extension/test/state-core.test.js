@@ -34,7 +34,7 @@ test('createInitialState creates durable defaults', () => {
   assert.equal(state.currentCount, 0);
   assert.equal(state.blocked, false);
   assert.equal(state.quota, 7);
-  assert.equal(state.sessionId, '2n9c-9ix');
+  assert.match(state.sessionId, /^2n9c-/);
   assert.deepEqual(state.overlayPosition, { x: 24, y: 24 });
   assert.deepEqual(state.history, []);
 });

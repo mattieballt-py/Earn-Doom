@@ -8,3 +8,6 @@ When the quota is reached, mask only Instagram content containers so passive bro
 
 ### Blocked by
 - Blocked by #002-track-content-and-counter-overlay
+
+### Status
+- Done

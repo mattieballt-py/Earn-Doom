@@ -8,3 +8,6 @@ Detect Instagram content consumption on desktop web and display a draggable top-
 
 ### Blocked by
 - Blocked by #001-bootstrap-storage-and-quota
+
+### Status
+- Done

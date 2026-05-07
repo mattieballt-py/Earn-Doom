@@ -8,3 +8,6 @@ Add defensive Instagram detection and lightweight local diagnostics so DOM chang
 
 ### Blocked by
 - Blocked by #005-reset-after-publish
+
+### Status
+- Done

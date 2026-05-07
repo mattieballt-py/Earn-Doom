@@ -1,20 +1,31 @@
 {
   "manifest_version": 3,
-  "name": "Your Extension",
+  "name": "Earn-Doom",
   "version": "1.0.0",
-  "description": "Extension description",
-  "permissions": [],
+  "description": "Limit Instagram doomscrolling until you create.",
+  "permissions": ["storage"],
+  "host_permissions": ["https://www.instagram.com/*"],
   "action": {
     "default_popup": "src/popup/index.html",
-    "default_title": "Your Extension"
+    "default_title": "Earn-Doom"
   },
   "background": {
     "service_worker": "src/background/service-worker.js"
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["src/content/content.js"]
+      "matches": ["https://www.instagram.com/*"],
+      "js": [
+        "src/shared/state-core.js",
+        "src/content/instagram-signature.js",
+        "src/content/overlay.js",
+        "src/content/content-mask.js",
+        "src/content/composer-state.js",
+        "src/content/publish-state.js",
+        "src/content/detection-diagnostics.js",
+        "src/content/content-controller.js",
+        "src/content/content.js"
+      ]
     }
   ]
 }

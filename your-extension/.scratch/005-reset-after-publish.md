@@ -8,3 +8,6 @@ Detect successful publishing and reset the blocked state, count, and quota to be
 
 ### Blocked by
 - Blocked by #004-exempt-create-flow
+
+### Status
+- Done
