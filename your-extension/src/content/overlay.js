@@ -102,10 +102,10 @@
       recoveryButton.style.display = currentState.blocked ? 'inline-flex' : 'none';
 
       if (currentState.blocked) {
-        root.style.background = 'rgba(20, 20, 20, 0.9)';
-        root.style.color = '#f4f4f4';
+        root.style.background = 'rgba(255, 182, 193, 0.95)';
+        root.style.color = '#111111';
       } else {
-        root.style.background = 'rgba(255, 255, 255, 0.9)';
+        root.style.background = 'rgba(255, 240, 245, 0.95)';
         root.style.color = '#111111';
       }
 
