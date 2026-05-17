@@ -62,8 +62,10 @@
     const currentState = await stateStore.ensure();
     let lastSignature = resolveContentSignature({
       document,
+      window,
       locationHref: window.location.href,
     });
+    let scanPending = false;
 
     const overlay = overlayFactory({
       document,
@@ -88,6 +90,18 @@
 
     overlay.render(currentState);
     mask.setBlocked(currentState.blocked && !composerStateResolver({ document, locationHref: window.location.href }));
+
+    function scheduleViewScan() {
+      if (scanPending) {
+        return;
+      }
+
+      scanPending = true;
+      Promise.resolve().then(() => {
+        scanPending = false;
+        return maybeCountContent(null);
+      });
+    }
 
     function syncMask(state) {
       const composerActive = composerStateResolver({ document, locationHref: window.location.href });
@@ -180,13 +194,34 @@
       return maybeCountContent(event.target);
     }
 
+    function handleViewportChange() {
+      scheduleViewScan();
+    }
+
     function handleRouteChange() {
-      return maybeCountContent(null);
+      scheduleViewScan();
     }
 
     document.addEventListener('click', handleClick, true);
+    document.addEventListener('scroll', handleViewportChange, true);
     window.addEventListener('popstate', handleRouteChange);
     window.addEventListener('hashchange', handleRouteChange);
+    window.addEventListener('resize', handleViewportChange);
+
+    let mutationObserver = null;
+    if (typeof MutationObserver !== 'undefined' && document.body) {
+      mutationObserver = new MutationObserver(() => {
+        scheduleViewScan();
+      });
+
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+      });
+    }
+
+    scheduleViewScan();
 
     return {
       overlay,
@@ -202,10 +237,15 @@
       destroy() {
         if (typeof document.removeEventListener === 'function') {
           document.removeEventListener('click', handleClick, true);
+          document.removeEventListener('scroll', handleViewportChange, true);
         }
         if (typeof window.removeEventListener === 'function') {
           window.removeEventListener('popstate', handleRouteChange);
           window.removeEventListener('hashchange', handleRouteChange);
+          window.removeEventListener('resize', handleViewportChange);
+        }
+        if (mutationObserver && typeof mutationObserver.disconnect === 'function') {
+          mutationObserver.disconnect();
         }
         mask.destroy();
         overlay.destroy();

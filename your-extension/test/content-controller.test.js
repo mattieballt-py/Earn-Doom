@@ -197,6 +197,98 @@ test('persists overlay position changes through the state store', async () => {
   assert.deepEqual(storage.snapshot()[stateCore.STORAGE_KEY].overlayPosition, { x: 90, y: 140 });
 });
 
+test('counts visible feed layout changes without a click', async () => {
+  const storage = createMemoryStorage();
+  const stateStore = stateCore.createStateStore(storage, { randomFn: () => 0.1, nowFn: () => 1000 });
+  await stateStore.ensure();
+
+  const firstVisiblePost = {
+    href: 'https://www.instagram.com/p/first/',
+    closest(selector) {
+      return selector === 'a[href]' ? this : null;
+    },
+    getBoundingClientRect() {
+      return { left: 16, top: 16, right: 316, bottom: 316, width: 300, height: 300 };
+    },
+  };
+
+  const secondVisiblePost = {
+    href: 'https://www.instagram.com/p/second/',
+    closest(selector) {
+      return selector === 'a[href]' ? this : null;
+    },
+    getBoundingClientRect() {
+      return { left: 16, top: 16, right: 316, bottom: 316, width: 300, height: 300 };
+    },
+  };
+
+  let visiblePost = firstVisiblePost;
+  const feedRoot = {
+    querySelectorAll(selector) {
+      if (selector.includes('/p/') || selector.includes('article')) {
+        return [visiblePost];
+      }
+
+      return [];
+    },
+  };
+
+  const fakeDocument = {
+    body: createFakeElement('body'),
+    documentElement: {
+      clientWidth: 1280,
+      clientHeight: 900,
+    },
+    createElement: createFakeElement,
+    querySelector(selector) {
+      if (selector === 'main' || selector === 'section main') {
+        return feedRoot;
+      }
+
+      return null;
+    },
+    querySelectorAll() {
+      return [];
+    },
+    addEventListener() {},
+    removeEventListener() {},
+  };
+
+  const fakeWindow = {
+    location: {
+      href: 'https://www.instagram.com/',
+    },
+    innerWidth: 1280,
+    innerHeight: 900,
+    addEventListener() {},
+    removeEventListener() {},
+  };
+
+  const fakeOverlay = {
+    root: createFakeElement('section'),
+    render() {},
+    setBlocked() {},
+    setPosition() {},
+    destroy() {},
+  };
+
+  const app = await controller.createContentController({
+    window: fakeWindow,
+    document: fakeDocument,
+    stateStore,
+    overlayFactory() {
+      return fakeOverlay;
+    },
+  });
+
+  visiblePost = secondVisiblePost;
+  await app.recordContentAdvance(null);
+
+  assert.equal(storage.snapshot()[stateCore.STORAGE_KEY].currentCount, 1);
+
+  app.destroy();
+});
+
 test('suppresses the block mask while the composer is active', async () => {
   const storage = createMemoryStorage();
   const stateStore = stateCore.createStateStore(storage, { randomFn: () => 0.1, nowFn: () => 1000 });
